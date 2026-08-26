@@ -6,6 +6,17 @@ import type {
   ProcessRunner,
 } from "../application/ports/process-runner.js";
 
+function childEnvironment(overrides?: Readonly<Record<string, string>>): NodeJS.ProcessEnv {
+  const inherited = { ...process.env };
+
+  // These variables are internal to Node's test runner. Leaking them into a nested `node --test`
+  // process makes Node treat that process as recursive test execution and skip the requested files.
+  delete inherited.NODE_TEST_CONTEXT;
+  delete inherited.NODE_TEST_WORKER_ID;
+
+  return { ...inherited, ...overrides };
+}
+
 export class NodeProcessRunner implements ProcessRunner {
   async run(invocation: ProcessInvocation): Promise<ProcessResult> {
     return await new Promise((resolve) => {
@@ -17,7 +28,7 @@ export class NodeProcessRunner implements ProcessRunner {
 
       const child = spawn(invocation.command, [...invocation.args], {
         cwd: invocation.cwd,
-        env: { ...process.env, ...invocation.env },
+        env: childEnvironment(invocation.env),
         shell: false,
         stdio: ["ignore", "pipe", "pipe"],
         windowsHide: true,

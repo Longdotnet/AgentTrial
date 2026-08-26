@@ -16,6 +16,18 @@ test("process runner captures stdout and exit status", async () => {
   assert.equal(result.timedOut, false);
 });
 
+test("process runner does not leak the parent Node test-runner context", async () => {
+  const result = await new NodeProcessRunner().run({
+    command: process.execPath,
+    args: ["-e", "process.stdout.write(process.env.NODE_TEST_CONTEXT ?? 'unset')"],
+    cwd: process.cwd(),
+    timeoutMs: 10_000,
+  });
+
+  assert.equal(result.exitCode, 0);
+  assert.equal(result.stdout, "unset");
+});
+
 test("process runner reports a missing executable without throwing", async () => {
   const result = await new NodeProcessRunner().run({
     command: "agenttrial-definitely-missing-executable-7d96f1",
