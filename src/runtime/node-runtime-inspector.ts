@@ -7,7 +7,9 @@ import type { RuntimeInspector } from "../application/ports/runtime-inspector.js
 function preferredWindowsPath(paths: readonly string[]): string | null {
   const launchable = paths.find((value) => {
     const extension = extname(value).toLowerCase();
-    return extension === ".exe" || extension === ".com" || extension === ".cmd" || extension === ".bat";
+    return (
+      extension === ".exe" || extension === ".com" || extension === ".cmd" || extension === ".bat"
+    );
   });
 
   return launchable ?? paths[0] ?? null;
