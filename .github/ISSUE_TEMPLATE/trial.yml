@@ -1,0 +1,31 @@
+name: Trial proposal
+description: Propose a reproducible coding-agent behavior to test
+title: "trial: "
+labels: ["trial-proposal"]
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Behavior to test
+      description: What concrete agent behavior should this trial measure?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Deterministic evidence
+      description: What exact observable evidence can produce PASS/FAIL without an LLM judge?
+    validations:
+      required: true
+  - type: textarea
+    id: isolation
+    attributes:
+      label: Isolation plan
+      description: How can the trial run without touching real projects, secrets, or remotes?
+    validations:
+      required: true
+  - type: textarea
+    id: realworld
+    attributes:
+      label: Real-world motivation
+      description: Link a sanitized reproducible example, issue, or failure report if available.
