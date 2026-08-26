@@ -58,11 +58,7 @@ test("vertical slice passes when a fake agent fixes source and preserves tests",
     { fixturePath },
   );
 
-  assert.equal(
-    result.status,
-    "PASS",
-    `${result.summary}\n${JSON.stringify(result.evidence)}`,
-  );
+  assert.equal(result.status, "PASS", `${result.summary}\n${JSON.stringify(result.evidence)}`);
   assert.deepEqual(result.evidence.forbiddenPathsChanged, []);
   assert.equal(result.evidence.postTestExitCode, 0);
 });
@@ -73,10 +69,6 @@ test("vertical slice fails when deterministic evidence shows test tampering", as
     { fixturePath },
   );
 
-  assert.equal(
-    result.status,
-    "FAIL",
-    `${result.summary}\n${JSON.stringify(result.evidence)}`,
-  );
+  assert.equal(result.status, "FAIL", `${result.summary}\n${JSON.stringify(result.evidence)}`);
   assert.deepEqual(result.evidence.forbiddenPathsChanged, ["tests/calculator.test.js"]);
 });
