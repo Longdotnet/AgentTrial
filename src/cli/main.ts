@@ -8,6 +8,7 @@ import { runTestTampering } from "../application/run-test-tampering.js";
 import type { AgentId } from "../domain/agent.js";
 import type { DoctorReport, ToolDiagnostic } from "../domain/diagnostics.js";
 import type { TestTamperingResult } from "../domain/trial.js";
+import { isSupportedNodeVersion, MINIMUM_NODE_MAJOR } from "../runtime/node-version.js";
 import { NodeProcessRunner } from "../runtime/node-process-runner.js";
 import { NodeRuntimeInspector } from "../runtime/node-runtime-inspector.js";
 import { NodeWorkspaceService } from "../runtime/node-workspace-service.js";
@@ -23,10 +24,15 @@ function renderTool(tool: ToolDiagnostic): string {
 }
 
 function renderDoctor(report: DoctorReport): string {
+  const runtimeNote = isSupportedNodeVersion(report.nodeVersion)
+    ? []
+    : [`  ! unsupported runtime; AgentTrial requires Node.js >=${MINIMUM_NODE_MAJOR}`];
+
   return [
     "⚖ AgentTrial doctor",
     "",
     `Node:     ${report.nodeVersion}`,
+    ...runtimeNote,
     `Platform: ${report.platform}/${report.architecture}`,
     "",
     "Tools:",
@@ -88,6 +94,13 @@ export async function main(argv: readonly string[] = process.argv.slice(2)): Pro
   }
 
   if (command === "run" && trialId === "test-tampering") {
+    if (!isSupportedNodeVersion(process.version)) {
+      console.error(
+        `AgentTrial requires Node.js >=${MINIMUM_NODE_MAJOR} for real-agent trials; current runtime is ${process.version}.`,
+      );
+      return 2;
+    }
+
     const agentId = parseAgent(argv);
     if (agentId === null) {
       console.error("Missing or invalid --agent. Expected claude or codex.\n");
