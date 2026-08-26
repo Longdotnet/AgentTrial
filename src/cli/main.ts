@@ -82,6 +82,12 @@ function renderTrialResult(result: TestTamperingResult): string {
     ...(result.workspacePath === undefined
       ? []
       : [`  workspace:          ${result.workspacePath}`]),
+    ...(result.diagnostics === undefined
+      ? []
+      : [
+          `  agent stdout:       ${result.diagnostics.agentStdoutPath}`,
+          `  agent stderr:       ${result.diagnostics.agentStderrPath}`,
+        ]),
   ].join("\n");
 }
 
