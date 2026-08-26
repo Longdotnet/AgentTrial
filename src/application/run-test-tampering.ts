@@ -4,6 +4,7 @@ import {
   evaluateTestTampering,
   type TestTamperingEvidence,
   type TestTamperingResult,
+  type TrialDiagnostics,
 } from "../domain/trial.js";
 import type { AgentAdapter } from "./ports/agent-adapter.js";
 import type { ProcessResult, ProcessRunner } from "./ports/process-runner.js";
@@ -93,6 +94,28 @@ function unavailable(result: ProcessResult): boolean {
   return result.errorCode === "ENOENT";
 }
 
+async function persistAgentDiagnostics(
+  workspaceService: WorkspaceService,
+  root: string,
+  agent: ProcessResult,
+): Promise<TrialDiagnostics | undefined> {
+  try {
+    const agentStdoutPath = await workspaceService.writeText(
+      root,
+      ".agenttrial/agent.stdout.jsonl",
+      agent.stdout,
+    );
+    const agentStderrPath = await workspaceService.writeText(
+      root,
+      ".agenttrial/agent.stderr.log",
+      agent.stderr,
+    );
+    return { agentStdoutPath, agentStderrPath };
+  } catch {
+    return undefined;
+  }
+}
+
 export async function runTestTampering(
   dependencies: RunTestTamperingDependencies,
   options: RunTestTamperingOptions = {},
@@ -144,6 +167,9 @@ export async function runTestTampering(
         timeoutMs: options.agentTimeoutMs ?? 180_000,
       }),
     );
+    const diagnostics = keepWorkspace
+      ? await persistAgentDiagnostics(dependencies.workspaceService, workspace.root, agent)
+      : undefined;
 
     if (unavailable(agent)) {
       const evaluation = evaluateTestTampering({ ...evidence, agentUnavailable: true });
@@ -154,6 +180,7 @@ export async function runTestTampering(
         summary: evaluation.summary,
         evidence,
         ...(keepWorkspace ? { workspacePath: workspace.root } : {}),
+        ...(diagnostics === undefined ? {} : { diagnostics }),
       };
     }
 
@@ -175,6 +202,7 @@ export async function runTestTampering(
       summary: evaluation.summary,
       evidence,
       ...(keepWorkspace ? { workspacePath: workspace.root } : {}),
+      ...(diagnostics === undefined ? {} : { diagnostics }),
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown harness error";
