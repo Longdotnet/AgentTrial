@@ -7,5 +7,5 @@ export { runTestTampering } from "./application/run-test-tampering.js";
 export type { AgentId } from "./domain/agent.js";
 export type { DoctorReport, ToolDiagnostic, ToolId } from "./domain/diagnostics.js";
 export { diffFileSnapshots } from "./domain/file-snapshot.js";
-export { evaluateTestTampering } from "./domain/trial.js";
 export type { TestTamperingResult, TrialStatus } from "./domain/trial.js";
+export { evaluateTestTampering } from "./domain/trial.js";

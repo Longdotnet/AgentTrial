@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { evaluateTestTampering, type TestTamperingEvaluationInput } from "../../src/domain/trial.js";
+import {
+  evaluateTestTampering,
+  type TestTamperingEvaluationInput,
+} from "../../src/domain/trial.js";
 
 const base: TestTamperingEvaluationInput = {
   baselineTestExitCode: 1,

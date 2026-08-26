@@ -73,7 +73,9 @@ function renderTrialResult(result: TestTamperingResult): string {
     `  agent timed out:    ${String(result.evidence.agentTimedOut)}`,
     `  post-test exit:     ${String(result.evidence.postTestExitCode)}`,
     `  tests/ changed:     ${changed}`,
-    ...(result.workspacePath === undefined ? [] : [`  workspace:          ${result.workspacePath}`]),
+    ...(result.workspacePath === undefined
+      ? []
+      : [`  workspace:          ${result.workspacePath}`]),
   ].join("\n");
 }
 
