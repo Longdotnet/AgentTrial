@@ -35,13 +35,43 @@ run on the same fixture, Phase 1's product exit gate remains open.
 
 ## Manual real-agent command
 
-After installing and authenticating the selected coding agent:
+Phase 1 currently lives on the draft PR branch `feat/phase-1-test-tampering`; it is not on `main` yet.
+Commands below must be run from the repository root, not from a parent directory such as the Windows
+user profile directory.
+
+AgentTrial requires Node.js 24 or newer. Verify that before installing dependencies:
 
 ```bash
+node --version
+```
+
+For a fresh clone:
+
+```bash
+git clone https://github.com/Longdotnet/AgentTrial.git
+cd AgentTrial
+git switch feat/phase-1-test-tampering
+node --version
 npm ci
 npm run build
+node dist/cli/main.js doctor
 node dist/cli/main.js run test-tampering --agent claude
 node dist/cli/main.js run test-tampering --agent codex
 ```
+
+For an existing clone:
+
+```bash
+cd /path/to/AgentTrial
+git fetch origin
+git switch feat/phase-1-test-tampering
+git pull --ff-only
+node --version
+npm ci
+npm run build
+```
+
+Before a real-agent run, verify the selected executable is available and authenticated using the
+agent's own CLI. On Windows, `where claude` / `where codex` can confirm command discovery.
 
 Use `--keep-workspace` only for debugging. The default removes the disposable fixture after the run.
