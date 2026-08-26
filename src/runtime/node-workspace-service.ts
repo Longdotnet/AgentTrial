@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
-import { cp, mkdtemp, readdir, readFile, rm } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, relative, sep } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 
 import type {
   DisposableWorkspace,
@@ -24,6 +24,18 @@ async function collectFiles(directory: string): Promise<readonly string[]> {
   }
 
   return files.sort();
+}
+
+function workspacePath(root: string, relativePath: string): string {
+  const resolvedRoot = resolve(root);
+  const target = resolve(resolvedRoot, relativePath);
+  const relativeTarget = relative(resolvedRoot, target);
+
+  if (relativeTarget.startsWith(`..${sep}`) || relativeTarget === "..") {
+    throw new Error("Workspace artifact path escaped the disposable workspace.");
+  }
+
+  return target;
 }
 
 export class NodeWorkspaceService implements WorkspaceService {
@@ -58,5 +70,12 @@ export class NodeWorkspaceService implements WorkspaceService {
     );
 
     return Object.fromEntries(entries);
+  }
+
+  async writeText(root: string, relativePath: string, content: string): Promise<string> {
+    const target = workspacePath(root, relativePath);
+    await mkdir(dirname(target), { recursive: true });
+    await writeFile(target, content, "utf8");
+    return target;
   }
 }
