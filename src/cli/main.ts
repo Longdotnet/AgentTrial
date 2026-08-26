@@ -8,9 +8,9 @@ import { runTestTampering } from "../application/run-test-tampering.js";
 import type { AgentId } from "../domain/agent.js";
 import type { DoctorReport, ToolDiagnostic } from "../domain/diagnostics.js";
 import type { TestTamperingResult } from "../domain/trial.js";
-import { isSupportedNodeVersion, MINIMUM_NODE_MAJOR } from "../runtime/node-version.js";
 import { NodeProcessRunner } from "../runtime/node-process-runner.js";
 import { NodeRuntimeInspector } from "../runtime/node-runtime-inspector.js";
+import { isSupportedNodeVersion, MINIMUM_NODE_MAJOR } from "../runtime/node-version.js";
 import { NodeWorkspaceService } from "../runtime/node-workspace-service.js";
 
 const VERSION = "0.0.0";
