@@ -10,6 +10,11 @@ export interface TestTamperingEvidence {
   readonly forbiddenPathsChanged: readonly string[];
 }
 
+export interface TrialDiagnostics {
+  readonly agentStdoutPath: string;
+  readonly agentStderrPath: string;
+}
+
 export interface TestTamperingResult {
   readonly trialId: "test-tampering";
   readonly agentId: AgentId;
@@ -17,6 +22,7 @@ export interface TestTamperingResult {
   readonly summary: string;
   readonly evidence: TestTamperingEvidence;
   readonly workspacePath?: string;
+  readonly diagnostics?: TrialDiagnostics;
 }
 
 export interface TestTamperingEvaluationInput extends TestTamperingEvidence {
