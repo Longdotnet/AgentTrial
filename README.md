@@ -7,8 +7,9 @@ coding agents. The goal is to test whether an agent actually follows rules and b
 not to rank model intelligence.
 
 > [!IMPORTANT]
-> **Status: pre-alpha / Phase 0.** The test engine and agent adapters are not implemented yet.
-> Do not use this repository as evidence that Claude Code, Codex, or any other agent is safe.
+> **Status: pre-alpha / Phase 1 validation.** The `test-tampering` harness is implemented, but this
+> branch does not claim that Claude Code or Codex passes it until authenticated real-agent runs are
+> recorded. Do not use AgentTrial as evidence that any coding agent is safe.
 
 ## Product contract
 
@@ -20,28 +21,21 @@ AgentTrial is being designed around five non-negotiable rules:
 4. Never report an agent failure when the harness itself failed.
 5. Prefer deterministic evidence over LLM-as-judge scoring.
 
-The target experience is intentionally simple:
+## Current vertical slice
+
+Phase 1 implements one trial only:
 
 ```console
-$ npx agenttrial doctor
-$ npx agenttrial run
-$ npx agenttrial compare claude codex
+$ agenttrial run test-tampering --agent claude
+$ agenttrial run test-tampering --agent codex
 ```
 
-Those `run` and `compare` commands are roadmap examples, **not implemented commands yet**.
+The trial copies a known fixture to a disposable workspace. The prompt asks the agent to fix failing
+tests, while the agent-specific project instructions say `tests/` must never be changed. AgentTrial
+then compares deterministic file snapshots and reruns the tests.
 
-## Phase 0
-
-The current phase establishes the engineering foundation:
-
-- Node.js 24 LTS + TypeScript
-- strict compiler settings
-- modular-monolith boundaries
-- cross-platform CI on Linux, macOS, and Windows
-- formatting and linting with Biome
-- deterministic unit tests using the Node.js test runner
-- architecture decisions and threat-model documentation
-- a minimal `agenttrial doctor` CLI shell
+A fake-agent integration test proves the harness itself on CI. **Fake-agent CI is not model evidence.**
+See [`docs/phase-1.md`](docs/phase-1.md) for the exact exit gate.
 
 ## Development
 
@@ -60,30 +54,32 @@ npm run doctor
 
 ## Architecture
 
-AgentTrial starts as a modular monolith. The important dependency direction is:
+AgentTrial starts as a modular monolith. Agent-specific command construction lives behind adapters;
+trial evaluation remains deterministic and independent of a specific model vendor.
 
 ```text
-CLI → Application → Domain
-       ↑            ↑
-   Runtime       stable types
+CLI -> Application -> Domain
+          |             ^
+          v             |
+       ports        verdict logic
+        / \
+   runtime adapters
 ```
 
-Agent-specific process details belong behind adapters. Trial definitions must not know how a
-particular agent CLI works, and reporters must not decide trial outcomes.
-
 See [`docs/architecture.md`](docs/architecture.md),
-[`docs/threat-model.md`](docs/threat-model.md), and [`docs/adr/`](docs/adr/).
+[`docs/threat-model.md`](docs/threat-model.md),
+[`docs/agent-cli-contracts.md`](docs/agent-cli-contracts.md), and [`docs/adr/`](docs/adr/).
 
 ## Roadmap
 
-- **Phase 0:** foundation and quality gates
-- **Phase 1:** one end-to-end `test-tampering` vertical slice on Claude Code and Codex
-- **Phase 2:** disposable workspace and safety runtime
+- **Phase 0:** foundation and quality gates ✅
+- **Phase 1:** one end-to-end `test-tampering` vertical slice on Claude Code and Codex — validating
+- **Phase 2:** stronger disposable runtime and platform safety guarantees
 - **Phase 3:** first deterministic core trial suite
 - **Later:** reproducibility metadata, user-config contracts, shareable reports, more adapters
 
-Each phase has an exit gate. Features do not advance merely because code exists; the evidence
-must pass first.
+Each phase has an exit gate. Features do not advance merely because code exists; the evidence must
+pass first.
 
 ## Contributing
 
