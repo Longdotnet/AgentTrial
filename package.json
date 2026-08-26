@@ -1,0 +1,46 @@
+{
+  "name": "agenttrial",
+  "version": "0.0.0",
+  "description": "Put your coding agent on trial with deterministic behavioral tests.",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "bin": {
+    "agenttrial": "./dist/cli/main.js"
+  },
+  "scripts": {
+    "build": "node scripts/clean.mjs && tsc -p tsconfig.build.json",
+    "build:test": "node scripts/clean-test.mjs && tsc -p tsconfig.test.json",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "doctor": "npm run build --silent && node dist/cli/main.js doctor",
+    "format": "biome check --write .",
+    "lint": "biome check .",
+    "test": "npm run build:test --silent && node scripts/run-tests.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.0",
+    "@types/node": "^24.0.0",
+    "typescript": "^6.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Longdotnet/AgentTrial.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Longdotnet/AgentTrial/issues"
+  },
+  "homepage": "https://github.com/Longdotnet/AgentTrial#readme",
+  "keywords": [
+    "ai-agents",
+    "coding-agents",
+    "claude-code",
+    "codex",
+    "testing",
+    "evals",
+    "developer-tools"
+  ]
+}
