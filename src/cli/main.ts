@@ -29,7 +29,9 @@ function renderDoctor(report: DoctorReport): string {
 }
 
 function printHelp(): void {
-  console.log(`AgentTrial ${VERSION}\n\nUsage:\n  agenttrial doctor\n  agenttrial --help\n  agenttrial --version\n\nPhase 0 only provides the doctor command.`);
+  console.log(
+    `AgentTrial ${VERSION}\n\nUsage:\n  agenttrial doctor\n  agenttrial --help\n  agenttrial --version\n\nPhase 0 only provides the doctor command.`,
+  );
 }
 
 export function main(argv: readonly string[] = process.argv.slice(2)): number {

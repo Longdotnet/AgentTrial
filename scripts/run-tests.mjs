@@ -1,7 +1,7 @@
-import { readdir } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { readdir } from "node:fs/promises";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../.tmp/test-dist/test", import.meta.url));
 
