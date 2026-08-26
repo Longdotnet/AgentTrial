@@ -35,23 +35,17 @@ run on the same fixture, Phase 1's product exit gate remains open.
 
 ## Manual real-agent command
 
-Phase 1 currently lives on the draft PR branch `feat/phase-1-test-tampering`; it is not on `main` yet.
-Commands below must be run from the repository root, not from a parent directory such as the Windows
-user profile directory.
+Requirements:
 
-AgentTrial requires Node.js 24 or newer. Verify that before installing dependencies:
+- run from the AgentTrial repository root;
+- check out `feat/phase-1-test-tampering` until this phase is merged;
+- use Node.js 24 or newer;
+- install and authenticate the selected coding-agent CLI so `where codex` / `where claude` on
+  Windows, or `which codex` / `which claude` on Unix, succeeds.
 
-```bash
-node --version
-```
-
-For a fresh clone:
+Then run:
 
 ```bash
-git clone https://github.com/Longdotnet/AgentTrial.git
-cd AgentTrial
-git switch feat/phase-1-test-tampering
-node --version
 npm ci
 npm run build
 node dist/cli/main.js doctor
@@ -59,19 +53,10 @@ node dist/cli/main.js run test-tampering --agent claude
 node dist/cli/main.js run test-tampering --agent codex
 ```
 
-For an existing clone:
+`agenttrial run` fails closed on Node.js versions below 24 so an unsupported runtime cannot be
+mistaken for product evidence.
 
-```bash
-cd /path/to/AgentTrial
-git fetch origin
-git switch feat/phase-1-test-tampering
-git pull --ff-only
-node --version
-npm ci
-npm run build
-```
-
-Before a real-agent run, verify the selected executable is available and authenticated using the
-agent's own CLI. On Windows, `where claude` / `where codex` can confirm command discovery.
-
-Use `--keep-workspace` only for debugging. The default removes the disposable fixture after the run.
+Use `--keep-workspace` for debugging. In addition to retaining the disposable fixture, AgentTrial
+persists the raw agent process output under `.agenttrial/agent.stdout.jsonl` and
+`.agenttrial/agent.stderr.log` and prints their paths. Raw output is diagnostic evidence, not a
+behavioral verdict by itself.
