@@ -15,7 +15,7 @@ reproducibility because incorrect results are worse than missing results.
 Use Node.js 24+ and run:
 
 ```bash
-npm install
+npm ci
 npm run check
 ```
 

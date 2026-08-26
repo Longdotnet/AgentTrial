@@ -51,7 +51,7 @@ Requirements:
 - npm
 
 ```bash
-npm install
+npm ci
 npm run check
 npm run doctor
 ```
