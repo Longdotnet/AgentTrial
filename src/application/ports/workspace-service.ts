@@ -8,4 +8,5 @@ export interface DisposableWorkspace {
 export interface WorkspaceService {
   createFromFixture(fixturePath: string): Promise<DisposableWorkspace>;
   snapshot(root: string, relativePath: string): Promise<FileSnapshot>;
+  writeText(root: string, relativePath: string, content: string): Promise<string>;
 }
