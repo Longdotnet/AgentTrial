@@ -1,7 +1,17 @@
 import { spawnSync } from "node:child_process";
+import { extname } from "node:path";
 import { arch, platform } from "node:process";
 
 import type { RuntimeInspector } from "../application/ports/runtime-inspector.js";
+
+function preferredWindowsPath(paths: readonly string[]): string | null {
+  const launchable = paths.find((value) => {
+    const extension = extname(value).toLowerCase();
+    return extension === ".exe" || extension === ".com" || extension === ".cmd" || extension === ".bat";
+  });
+
+  return launchable ?? paths[0] ?? null;
+}
 
 export class NodeRuntimeInspector implements RuntimeInspector {
   nodeVersion(): string {
@@ -17,7 +27,7 @@ export class NodeRuntimeInspector implements RuntimeInspector {
   }
 
   findExecutable(command: string): string | null {
-    const locator = process.platform === "win32" ? "where" : "which";
+    const locator = process.platform === "win32" ? "where.exe" : "which";
     const result = spawnSync(locator, [command], {
       encoding: "utf8",
       shell: false,
@@ -28,11 +38,15 @@ export class NodeRuntimeInspector implements RuntimeInspector {
       return null;
     }
 
-    const firstPath = result.stdout
+    const paths = result.stdout
       .split(/\r?\n/u)
       .map((value) => value.trim())
-      .find((value) => value.length > 0);
+      .filter((value) => value.length > 0);
 
-    return firstPath ?? null;
+    if (process.platform === "win32") {
+      return preferredWindowsPath(paths);
+    }
+
+    return paths[0] ?? null;
   }
 }

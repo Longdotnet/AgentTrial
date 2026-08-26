@@ -1,9 +1,15 @@
+export interface WindowsNpmShimFallback {
+  readonly packageName: string;
+  readonly binPath: string;
+}
+
 export interface ProcessInvocation {
   readonly command: string;
   readonly args: readonly string[];
   readonly cwd: string;
   readonly timeoutMs: number;
   readonly env?: Readonly<Record<string, string>>;
+  readonly windowsNpmShim?: WindowsNpmShimFallback;
 }
 
 export interface ProcessResult {

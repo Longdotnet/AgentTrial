@@ -20,6 +20,10 @@ export class CodexAdapter implements AgentAdapter {
       ],
       cwd: request.cwd,
       timeoutMs: request.timeoutMs,
+      windowsNpmShim: {
+        packageName: "@openai/codex",
+        binPath: "bin/codex.js",
+      },
     };
   }
 }

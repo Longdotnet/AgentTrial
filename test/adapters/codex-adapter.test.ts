@@ -22,4 +22,8 @@ test("Codex adapter uses non-interactive ephemeral workspace-write execution", (
     "/fixture",
     "fix it",
   ]);
+  assert.deepEqual(invocation.windowsNpmShim, {
+    packageName: "@openai/codex",
+    binPath: "bin/codex.js",
+  });
 });

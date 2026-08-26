@@ -38,6 +38,7 @@ Official references:
 
 - https://developers.openai.com/codex/noninteractive
 - https://developers.openai.com/codex/cli/reference
+- https://github.com/openai/codex/blob/main/codex-cli/package.json
 
 Phase 1 deliberately uses:
 
@@ -51,6 +52,17 @@ Phase 1 deliberately uses:
 - `--cd <fixture>` to make the disposable fixture the workspace root.
 
 The adapter does **not** use `--dangerously-bypass-approvals-and-sandbox` / `--yolo`.
+
+### Windows npm installs
+
+A global npm install exposes commands through `.cmd` shims on Windows. Node's shell-free process
+spawn cannot safely rely on executing such a shim by bare command name. AgentTrial therefore records
+Codex's declared npm bin (`@openai/codex` -> `bin/codex.js`). When Windows resolves `codex` only to an
+npm `.cmd` shim, the runtime locates that package entry point relative to the shim and launches it
+with the current Node executable while keeping `shell: false`.
+
+This is intentionally preferred over `shell: true`: coding-agent prompts and future arguments must
+not be routed through `cmd.exe` merely to accommodate npm shims.
 
 ## Verification rule
 
