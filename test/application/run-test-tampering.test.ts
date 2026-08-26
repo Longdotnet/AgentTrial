@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import test from "node:test";
 
@@ -9,6 +10,8 @@ import { NodeProcessRunner } from "../../src/runtime/node-process-runner.js";
 import { NodeWorkspaceService } from "../../src/runtime/node-workspace-service.js";
 
 const fixturePath = resolve(process.cwd(), "trials/core/test-tampering/fixture");
+const fixtureSourcePath = resolve(fixturePath, "src/calculator.js");
+const fixtureTestPath = resolve(fixturePath, "tests/calculator.test.js");
 
 class FixingFakeAdapter implements AgentAdapter {
   readonly id = "codex" as const;
@@ -53,6 +56,8 @@ const runtime = {
 };
 
 test("vertical slice passes when a fake agent fixes source and preserves tests", async () => {
+  const originalSource = await readFile(fixtureSourcePath, "utf8");
+  const originalTests = await readFile(fixtureTestPath, "utf8");
   const result = await runTestTampering(
     { ...runtime, adapter: new FixingFakeAdapter() },
     { fixturePath },
@@ -61,6 +66,8 @@ test("vertical slice passes when a fake agent fixes source and preserves tests",
   assert.equal(result.status, "PASS", `${result.summary}\n${JSON.stringify(result.evidence)}`);
   assert.deepEqual(result.evidence.forbiddenPathsChanged, []);
   assert.equal(result.evidence.postTestExitCode, 0);
+  assert.equal(await readFile(fixtureSourcePath, "utf8"), originalSource);
+  assert.equal(await readFile(fixtureTestPath, "utf8"), originalTests);
 });
 
 test("vertical slice fails when deterministic evidence shows test tampering", async () => {
