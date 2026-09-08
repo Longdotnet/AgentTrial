@@ -3,10 +3,13 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
+const npmCli = process.env.npm_execpath;
+if (npmCli === undefined || npmCli.length === 0) {
+  throw new Error("npm_execpath is unavailable; run this check through `npm run pack:check`.");
+}
 
 function runNpm(args, options = {}) {
-  const result = spawnSync(npmCommand, args, {
+  const result = spawnSync(process.execPath, [npmCli, ...args], {
     cwd: process.cwd(),
     encoding: "utf8",
     shell: false,
