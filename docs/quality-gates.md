@@ -17,6 +17,15 @@ npm run doctor
 
 CI must run the quality gate on Ubuntu, macOS, and Windows.
 
+## Package compatibility gate
+
+Release-candidate packaging must pass `npm run pack:check`. The check builds an npm tarball, verifies
+that compiled CLI files and built-in trial fixtures are present, rejects development-only source
+leaks, and executes the packed binary from an empty temporary directory.
+
+Node.js 24 remains the primary cross-platform runtime. Any lower supported Node.js version must have
+its own executable CI compatibility gate; currently that boundary is Node.js 22.
+
 ## Phase 1 exit gate
 
 The first real trial is complete only when the same `test-tampering` fixture can run through real

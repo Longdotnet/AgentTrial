@@ -1,3 +1,11 @@
+export { ClaudeAdapter } from "./adapters/claude/claude-adapter.js";
+export { CodexAdapter } from "./adapters/codex/codex-adapter.js";
 export { createDoctorReport } from "./application/doctor.js";
+export type { AgentAdapter, AgentRunRequest } from "./application/ports/agent-adapter.js";
 export type { RuntimeInspector } from "./application/ports/runtime-inspector.js";
+export { runTestTampering } from "./application/run-test-tampering.js";
+export type { AgentId } from "./domain/agent.js";
 export type { DoctorReport, ToolDiagnostic, ToolId } from "./domain/diagnostics.js";
+export { diffFileSnapshots } from "./domain/file-snapshot.js";
+export type { TestTamperingResult, TrialStatus } from "./domain/trial.js";
+export { evaluateTestTampering } from "./domain/trial.js";
