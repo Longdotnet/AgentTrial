@@ -33,13 +33,16 @@ That does **not** prove Claude Code or Codex pass the trial. Real-agent evidence
 authenticated local installation and the current official CLI contract. Until both agents have been
 run on the same fixture, Phase 1's product exit gate remains open.
 
+The primary cross-platform quality gate remains Node.js 24. A separate Node.js 22 compatibility gate
+runs the full quality suite and the packed-CLI smoke test before AgentTrial claims Node.js 22 support.
+
 ## Manual real-agent command
 
 Requirements:
 
 - run from the AgentTrial repository root;
 - check out `feat/phase-1-test-tampering` until this phase is merged;
-- use Node.js 24 or newer;
+- use Node.js 22 or newer;
 - install and authenticate the selected coding-agent CLI so `where codex` / `where claude` on
   Windows, or `which codex` / `which claude` on Unix, succeeds.
 
@@ -53,7 +56,7 @@ node dist/cli/main.js run test-tampering --agent claude
 node dist/cli/main.js run test-tampering --agent codex
 ```
 
-`agenttrial run` fails closed on Node.js versions below 24 so an unsupported runtime cannot be
+`agenttrial run` fails closed on Node.js versions below 22 so an unsupported runtime cannot be
 mistaken for product evidence.
 
 Use `--keep-workspace` for debugging. In addition to retaining the disposable fixture, AgentTrial

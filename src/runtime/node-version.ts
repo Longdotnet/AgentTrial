@@ -1,4 +1,4 @@
-export const MINIMUM_NODE_MAJOR = 24;
+export const MINIMUM_NODE_MAJOR = 22;
 
 export function nodeMajor(version: string): number | null {
   const [major] = version.replace(/^v/u, "").split(".");

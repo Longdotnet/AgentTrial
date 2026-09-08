@@ -37,20 +37,42 @@ then compares deterministic file snapshots and reruns the tests.
 A fake-agent integration test proves the harness itself on CI. **Fake-agent CI is not model evidence.**
 See [`docs/phase-1.md`](docs/phase-1.md) for the exact exit gate.
 
+## npx release path
+
+The CLI package is now built and smoke-tested as an npm tarball, including the runtime trial fixture.
+CI installs that tarball into an empty temporary directory and executes its `agenttrial` binary rather
+than relying on the repository checkout.
+
+The first npm release has **not** happened yet. After a release is actually published and linked from
+this repository, the intended zero-clone entry point is:
+
+```console
+$ npx agenttrial doctor
+```
+
+Until then, do not interpret that command as a claim that an npm release exists.
+
 ## Development
 
 Requirements:
 
-- Node.js 24+
+- Node.js 22+
 - npm
+
+Node.js 24 remains the primary cross-platform CI runtime. Node.js 22 has a separate compatibility
+gate so the lower runtime claim is executable evidence rather than an assumption.
 
 ```bash
 npm ci
 npm run check
 npm run doctor
+npm run pack:check
 ```
 
 `npm run check` is the local quality gate: lint, typecheck, tests, then production build.
+`npm run pack:check` builds the same package shape intended for npm, verifies required runtime files
+are present and development-only source is absent, then executes `--version` and `doctor` from the
+packed CLI in an empty temporary directory.
 
 ## Architecture
 

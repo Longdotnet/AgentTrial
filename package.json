@@ -3,9 +3,13 @@
   "version": "0.0.0",
   "description": "Put your coding agent on trial with deterministic behavioral tests.",
   "type": "module",
-  "private": true,
+  "private": false,
+  "files": [
+    "dist",
+    "trials"
+  ],
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=22.0.0"
   },
   "bin": {
     "agenttrial": "./dist/cli/main.js"
@@ -17,6 +21,8 @@
     "doctor": "npm run build --silent && node dist/cli/main.js doctor",
     "format": "biome check --write .",
     "lint": "biome check .",
+    "pack:check": "node scripts/check-package.mjs",
+    "prepack": "npm run build",
     "test": "npm run build:test --silent && node scripts/run-tests.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
